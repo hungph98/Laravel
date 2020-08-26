@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\QueryException;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,3 +77,72 @@ Route::get('uploadFile',function(){
 	return view('postFile');
 });
 Route::post('postFile',['as'=>'postFile','uses'=>'MyController@postFile']);
+//JSON
+
+Route::get('getJson','MyController@getJson');
+//View
+
+Route::get('myView','MyController@myView');
+//Truyền dữ liệu trên View
+
+Route::get('Time/{t}','MyController@Time');
+//Dùng chung dữ liệu trên View
+
+View::share('KhoaHoc','Laravel');
+//Blade template
+ Route::get('blade', function(){
+ 	return view('pages.laravel');
+ });
+
+ Route::get('BladeTemplate/{$str}','MyController@blade');	
+
+ //DB Schema
+ Route::get('database',function(){
+ 	// Schema::create('loaisanpham',function($table){
+ 	// 	$table->increments('id');
+ 	// 	$table->string('ten',200);
+ 	// });
+ 	Schema::create('TheLoai',function($table){
+ 		$table->increments('id');
+ 		$table->string('ten',200)->nullable;
+ 		$table->string('nhasanxuat')->default('nhasanxuat');
+ 	});
+
+ 	echo "Đã thực hiện lệnh tạo bảng";
+ });
+ //Chinh sủa bảng vơi Schema
+ Route::get('lienketbang',function(){
+ 	Schema::create('sanpham',function($table){
+ 		$table->increments('id');
+ 		$table->string('ten');
+ 		$table->float('Gia');
+ 		$table->integer('soluong')->default(0);
+ 		$table->integer('id_loaisanpham')->unsigned();
+ 		$table->foreign('id_loaisanpham')->references('id')->on('loaisanpham');
+ 	});
+
+ 	echo "Đã tạo bảng sản phẩm";
+ });
+
+ Route::get('suabang',function(){
+ 	Schema::table('TheLoai',function($table){
+ 		$table->dropColumn('nhasanxuat');
+ 	});
+ });
+
+ Route::get('themcot',function(){
+ 	Schema::table('Theloai',function($table){
+ 		$table->string('Email');
+ 	});
+ 	echo "Đã thêm cột Email";
+ });
+ Route::get('doiten',function(){
+ 	Schema::rename('TheLoai', 'Nguoidung');
+ 	echo "Đã đổi tên bảng";
+ });
+
+ Route::get('xoabang',function(){
+ 	//Schema::drop('nguoidung');
+ 	Schema::dropIfExists('nguoidung');
+ 	echo "Đã xóa bảng";
+ });

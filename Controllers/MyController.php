@@ -50,9 +50,37 @@ class MyController extends Controller
     	if($request->hasFile('myFile'))
     	{
     		$file = $request->file('myFile');
-    		$file->move('img','myfile.jpg');
+    		if($file->getClientOriginaExtension('myFile') == "JPG"){
+    			$filename = $file->getClientOriginalName('myFile');
+    			$file->move('img',$filename);
+    			echo "Đã lưu file ". $filename;
+    		}else{
+    			echo "Không được phép upload file ";
+    		}
     	}else{
     		echo "Chua co File";
     	}
+    }
+    public function getJson()
+    {
+    	$array = array('Laravel','PHP','ASP.net','Html');
+    	return response()->json($array);
+    }
+    public function myView()
+    {
+    	return view('myView');
+    }
+    public function Time($t)
+    {
+    	return view('myView',['t'=>$t]);
+    }
+    public function blade($str)
+    {
+        $KhoaHoc = "Laravel - Khoa Pham";
+        if ($str == "Laravel") {
+            return view('pages.laravel',['KhoaHoc'=>$KhoaHoc]);
+        }elseif ($str == "php" ) {
+            return view('pages.php',['KhoaHoc'=>$KhoaHoc]);
+        }
     }
 }
